@@ -3,7 +3,7 @@
 import uuid
 from app.models.db_models import TaskDB
 from app.models.schemas import TaskCreate, TaskUpdate
-from app.repositories.task_repository import TaskRepository
+from app.repositories.interface import ITaskRepository
 
 class TaskNotFoundError(Exception):
     """Lançada quando uma tarefa não existe."""
@@ -15,7 +15,7 @@ class TaskNotFoundError(Exception):
 class TaskService:
     """Coordena as operações de tarefas entre a API e o repository."""
 
-    def __init__(self, repository: TaskRepository) -> None:
+    def __init__(self, repository: ITaskRepository) -> None:
         self.repository = repository
 
     def create_task(self, data: TaskCreate) -> TaskDB:
@@ -24,7 +24,7 @@ class TaskService:
 
     def list_tasks(self, status: bool | None = None) -> list[TaskDB]:
         """Lista as tarefas, com filtro opcional por status."""
-        return self.repository.list(status)
+        return self.repository.list_all(status)
 
     def get_task(self, task_id: uuid.UUID) -> TaskDB:
         """Busca uma tarefa ou lança TaskNotFoundError se ela não existir."""

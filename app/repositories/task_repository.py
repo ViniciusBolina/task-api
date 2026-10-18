@@ -1,13 +1,14 @@
-"""Camada de acesso ao banco de dados para tarefas."""
+"""Implementação do repository de tarefas com SQLAlchemy."""
 
 import uuid
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from app.models.db_models import TaskDB
 from app.models.schemas import TaskCreate, TaskUpdate
+from app.repositories.interface import ITaskRepository
 
 
-class TaskRepository:
+class TaskRepository(ITaskRepository):
     """Executa as operações de CRUD da tabela `tasks`."""
 
     def __init__(self, db: Session) -> None:
@@ -21,7 +22,7 @@ class TaskRepository:
         self.db.refresh(task)
         return task
 
-    def list(self, status: bool | None = None) -> list[TaskDB]:
+    def list_all(self, status: bool | None = None) -> list[TaskDB]:
         """Lista as tarefas por ordem de criação, com filtro opcional por status."""
         query = select(TaskDB).order_by(TaskDB.created_at)
         if status is not None:

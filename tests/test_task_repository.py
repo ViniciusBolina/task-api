@@ -25,7 +25,6 @@ def test_create_generates_id_and_defaults(repo):
     assert task.status is False
     assert task.created_at is not None
 
-
 def test_get_returns_task_when_it_exists(repo):
     created = repo.create(TaskCreate(title="Estudar pytest"))
     found = repo.get(created.id)
@@ -38,13 +37,13 @@ def test_get_returns_none_for_unknown_id(repo):
 def test_list_returns_all_tasks(repo):
     repo.create(TaskCreate(title="Tarefa um"))
     repo.create(TaskCreate(title="Tarefa dois"))
-    assert len(repo.list()) == 2
+    assert len(repo.list_all()) == 2
 
 def test_list_filters_by_status(repo):
     repo.create(TaskCreate(title="Pendente", status=False))
     repo.create(TaskCreate(title="Concluída", status=True))
-    done = repo.list(status=True)
-    pending = repo.list(status=False)
+    done = repo.list_all(status=True)
+    pending = repo.list_all(status=False)
     assert [t.title for t in done] == ["Concluída"]
     assert [t.title for t in pending] == ["Pendente"]
 
@@ -59,4 +58,4 @@ def test_delete_removes_task(repo):
     task = repo.create(TaskCreate(title="Apagar depois"))
     repo.delete(task)
     assert repo.get(task.id) is None
-    assert repo.list() == []
+    assert repo.list_all() == []
